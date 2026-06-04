@@ -34,7 +34,7 @@ The **SO-101** is a 6-DOF desktop robot arm built around the Feetech STS3215 ser
 |:------------------|:------------------------|:------------------------|
 | Controller Board  | Feetech serial board    | Feetech serial board    |
 | USB Port          | `/dev/ttyACM1`          | `/dev/ttyACM0`          |
-| Power Supply      | 5 V external PSU        | 5 V external PSU        |
+| Power Supply      | 5 V external PSU        | 12 V external PSU        |
 | Motors            | 6 × Feetech STS3215     | 6 × Feetech STS3215     |
 
 > **Note:** Your actual ports (`/dev/ttyACM0`, `/dev/ttyACM1`) may differ.
@@ -61,16 +61,16 @@ The leader arm uses lighter, faster motors since it only needs to sense and tran
 
 ### Motor Specifications — Follower Arm
 
-The follower arm uses the **C018** variant across all 6 joints. This variant shares the same high gear ratio (1:345) as the C001 but is rated for 5V operation, providing substantially more holding torque to carry objects and resist gravity during task execution.
+The follower arm uses the **C018** variant across all 6 joints. This variant shares the same high gear ratio (1:345) as the C001 but is rated for 12V operation, providing substantially more holding torque to carry objects and resist gravity during task execution.
 
 | Joint # | Motor Name    | Model           | Gear Ratio | Stall Torque | Operating Voltage | Encoder   |
 |:-------:|:--------------|:----------------|:----------:|:------------:|:-----------------:|:---------:|
-| 1       | shoulder_pan  | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
-| 2       | shoulder_lift | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
-| 3       | elbow_flex    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
-| 4       | wrist_flex    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
-| 5       | wrist_roll    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
-| 6       | gripper       | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 5 V               | 12-bit    |
+| 1       | shoulder_pan  | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
+| 2       | shoulder_lift | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
+| 3       | elbow_flex    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
+| 4       | wrist_flex    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
+| 5       | wrist_roll    | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
+| 6       | gripper       | STS3215-**C018** | 1 : 345   | ~30 kg·cm    | 12 V              | 12-bit    |
 
 > **Common specs across all variants:** TTL serial bus (half-duplex), 1 Mbps baud rate, 4096 steps/360° resolution, metal gears (backlash ≤ 0.5°), dimensions 45.2 × 24.7 × 35 mm, weight ~55 g.
 
@@ -244,7 +244,7 @@ uv run python set_middle_positions.py --port /dev/ttyACM1 --id 4
 
 > [!WARNING]
 > **Overload Error during assembly:** If the motor is mechanically blocked and cannot reach `2047`, the firmware will trigger an Overload protection flag and stop responding.
-> To recover: **power-cycle the arm** (turn off/on the 5V supply) and retry after clearing the mechanical obstruction.
+> To recover: **power-cycle the arm** (turn off/on the 12V supply) and retry after clearing the mechanical obstruction.
 
 ---
 
@@ -319,7 +319,7 @@ The elbow joint can sometimes reach encoder value `0` (the absolute hardware min
 With both arms calibrated and all motor IDs programmed, you can begin leader-follower teleoperation.
 
 > [!IMPORTANT]
-> **External 5V power supply must be ON** for both arms before running any teleoperation command. The Feetech STS3215 motors cannot operate on USB bus power alone. Ensure the external 5V PSU is connected to the controller board and switched on. Running without it will cause `Input voltage error` faults on every motor.
+> **External 12V power supply must be ON** for both arms before running any teleoperation command. The Feetech STS3215 motors cannot operate on USB bus power alone. Ensure the external 12V PSU is connected to the controller board and switched on. Running without it will cause `Input voltage error` faults on every motor.
 
 ### 6.1 Basic Teleoperation
 
@@ -440,7 +440,7 @@ uv run lerobot-teleoperate \
 **Cause:** The external power supply is off, disconnected, or providing insufficient current.
 
 **Fix:**
-1. Verify the **5V external PSU** is plugged into the controller board and the wall outlet, and the power switch is **ON**.
+1. Verify the **12V external PSU** is plugged into the controller board and the wall outlet, and the power switch is **ON**.
 2. Check that all daisy-chain cables between motors are fully seated.
 3. Power-cycle the arm (turn off, wait 2 seconds, turn on) to clear the fault flag.
 4. Re-run your command.
